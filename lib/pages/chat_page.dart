@@ -4,7 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatelessWidget {
-  ChatPage({Key? key}) : super(key: key);
+  ChatPage({
+    Key? key,
+    required this.chatRoomId,
+  }) : super(key: key);
+  final String chatRoomId;
   final TextEditingController _message = TextEditingController();
 
   void onSendMessage() async {
@@ -43,7 +47,7 @@ class ChatPage extends StatelessWidget {
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('chatroom')
-                  .doc('chatRoomId')
+                  .doc(chatRoomId)
                   .collection('chats')
                   .orderBy("time", descending: false)
                   .snapshots(),
