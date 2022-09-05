@@ -1,4 +1,5 @@
 import 'package:chat_app_flutter_firebase/firebase_options.dart';
+import 'package:chat_app_flutter_firebase/pages/authenticate.dart';
 import 'package:chat_app_flutter_firebase/pages/chat_page.dart';
 import 'package:chat_app_flutter_firebase/pages/chats_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ChatPage(),
+      home: Authenticate(),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:chat_app_flutter_firebase/widgets/chat_messages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatelessWidget {
@@ -9,7 +10,7 @@ class ChatPage extends StatelessWidget {
   void onSendMessage() async {
     if (_message.text.isNotEmpty) {
       Map<String, dynamic> messages = {
-        "sendby": 'Alberto Ferroni',
+        "sendby": FirebaseAuth.instance.currentUser!.uid,
         "message": _message.text,
         "type": "text",
         "time": FieldValue.serverTimestamp(),
