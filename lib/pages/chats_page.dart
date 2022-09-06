@@ -35,7 +35,7 @@ class ChatsPage extends StatelessWidget {
                   ),
                 ),
                 title: Text(
-                  (snapshot.data as QuerySnapshot).docs[index].id,
+                  FirebaseAuth.instance.currentUser!.displayName.toString(),
                 ),
               ),
             );
