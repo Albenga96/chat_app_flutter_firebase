@@ -22,23 +22,43 @@ class ChatsPage extends StatelessWidget {
             .get(),
         builder: (context, snapshot) {
           if (snapshot.data != null) {
+            List<List<dynamic>> ids = [];
+            for (var element in (snapshot.data as QuerySnapshot).docs) {
+              ids.add(element['partecipants']);
+            }
+
             return ListView.builder(
-              itemCount: (snapshot.data as QuerySnapshot).docs.length,
-              itemBuilder: (context, index) => ListTile(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ChatPage(
-                      chatRoomId:
-                          (snapshot.data as QuerySnapshot).docs[index].id,
+                itemCount: (snapshot.data as QuerySnapshot).docs.length,
+                itemBuilder: (context, index) {
+                  ids[index].removeWhere((element) =>
+                      element == FirebaseAuth.instance.currentUser!.uid);
+                  return ListTile(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ChatPage(
+                          chatRoomId:
+                              (snapshot.data as QuerySnapshot).docs[index].id,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                title: Text(
-                  FirebaseAuth.instance.currentUser!.displayName.toString(),
-                ),
-              ),
-            );
+                    title: FutureBuilder(
+                      future: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(ids[index][0])
+                          .get(),
+                      builder: (context, snapshot) {
+                        if (snapshot.data != null) {
+                          return Text(
+                            (snapshot.data as DocumentSnapshot)['name'],
+                          );
+                        } else {
+                          return const Text('');
+                        }
+                      },
+                    ),
+                  );
+                });
           } else {
             return Container();
           }
