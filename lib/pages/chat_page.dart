@@ -2,6 +2,7 @@ import 'package:chat_app_flutter_firebase/widgets/chat_messages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatPage extends StatelessWidget {
   ChatPage({
@@ -17,7 +18,7 @@ class ChatPage extends StatelessWidget {
         "sendby": FirebaseAuth.instance.currentUser!.uid,
         "message": _message.text,
         "type": "text",
-        "time": FieldValue.serverTimestamp(),
+        "time": Timestamp.now(),
       };
 
       _message.clear();
@@ -56,11 +57,47 @@ class ChatPage extends StatelessWidget {
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      Map<String, dynamic> map = snapshot.data!.docs[index]
-                          .data() as Map<String, dynamic>;
-                      return ChatMessages(
-                        map: map,
-                      );
+                      Map<String, dynamic> currentMessageMap =
+                          snapshot.data!.docs[index].data()
+                              as Map<String, dynamic>;
+                      Map<String, dynamic> afterMessageMap = currentMessageMap;
+                      if (index < snapshot.data!.docs.length - 1) {
+                        afterMessageMap = snapshot.data!.docs[index + 1].data()
+                            as Map<String, dynamic>;
+                      }
+
+                      if ((afterMessageMap['time'] as Timestamp).toDate().day ==
+                          (currentMessageMap['time'] as Timestamp)
+                              .toDate()
+                              .day) {
+                        return ChatMessages(
+                          map: currentMessageMap,
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Divider(
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Text(
+                                DateFormat.MMMMd().format(
+                                  (afterMessageMap['time'] as Timestamp)
+                                      .toDate(),
+                                ),
+                              ),
+                              const Divider(
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                     },
                   );
                 } else {
