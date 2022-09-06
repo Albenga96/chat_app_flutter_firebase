@@ -74,28 +74,25 @@ class ChatPage extends StatelessWidget {
                           map: currentMessageMap,
                         );
                       } else {
-                        return Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Divider(
-                                  color: Colors.black,
+                        return Column(
+                          children: [
+                            ChatMessages(
+                              map: currentMessageMap,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(24.0),
+                              child: Center(
+                                child: Text(
+                                  DateFormat.MMMMd().format(
+                                    (afterMessageMap['time'] as Timestamp)
+                                        .toDate(),
+                                  ),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              Text(
-                                DateFormat.MMMMd().format(
-                                  (afterMessageMap['time'] as Timestamp)
-                                      .toDate(),
-                                ),
-                              ),
-                              const Divider(
-                                color: Colors.black,
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         );
                       }
                     },
